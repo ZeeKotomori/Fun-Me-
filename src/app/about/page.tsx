@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Navbar from '../components/Navbar';
 import PageWrapper from '../components/PageWrapper';
 
@@ -15,7 +16,7 @@ export default function About() {
                         This app displays Fun facts of the day, <span className='font-semibold'>Every Day</span>. 
                     </li>
                     <li className='tracking-[-.01em]'>
-                        You can see the facts of the day by clicking the button below or by visiting the <a href="/fun-fact/today" className="text-blue-500 hover:underline">Fun Fact Today</a> page.
+                        You can see the facts of the day by clicking the button below or by visiting the <Link href="/fun-fact/today" className="text-blue-500 hover:underline">Fun Fact Today</Link> page.
                     </li>
                     <li className='tracking-[-.01em]'>
                         or you can type /fun-fact/today or fun-fact/[number] after domain

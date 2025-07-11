@@ -16,8 +16,11 @@ export default function About() {
                     <li className='mb-2 tracking-[-.01em]'>
                         From {' '}
                         <a 
+                            href="https://maps.app.goo.gl/EVx6gfRDg36Qsrmy7"
+                            target='_blank'
+                            rel="noopener noreferrer" 
                             className="text-blue-500 hover:underline"
-                            href="https://maps.app.goo.gl/EVx6gfRDg36Qsrmy7">
+                            >
                             Bandung 
                         </a>
                     </li>
