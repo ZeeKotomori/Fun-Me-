@@ -2,10 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import clsx from 'clsx'; // optional, but helps for cleaner class logic
+import clsx from 'clsx';
+import { useState } from 'react';
+import { Menu, X } from 'lucide-react'; // install lucide-react untuk ikon
 
 export default function Navbar() {
     const pathname = usePathname();
+    const [isOpen, setIsOpen] = useState(false);
 
     const navItems = [
         { label: 'Home', href: '/' },
@@ -16,27 +19,60 @@ export default function Navbar() {
     ];
 
     return (
-        <nav className="flex justify-between items-center px-8 py-4 shadow font-[var(--font-geist-sans)]">
-            <div className="text-lg font-semibold">
-                <Link href="/">Fun Me!</Link>
+        <nav className="w-full px-6 py-4 shadow-md text-white font-[var(--font-geist-sans)]">
+            <div className="flex justify-between items-center">
+                {/* Logo */}
+                <Link href="/" className="text-xl font-bold">
+                    Fun Me!
+                </Link>
+
+                {/* Hamburger Icon for mobile */}
+                <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="md:hidden focus:outline-none"
+                >
+                    {isOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
+
+                {/* Menu Items (desktop) */}
+                <div className="hidden md:flex items-center gap-6">
+                    {navItems.map((item) => (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            className={clsx(
+                                'relative pb-1 transition-all',
+                                pathname === item.href
+                                    ? 'text-white border-b-2 border-white font-semibold'
+                                    : 'text-gray-400 hover:text-white'
+                            )}
+                        >
+                            {item.label}
+                        </Link>
+                    ))}
+                </div>
             </div>
 
-            <div className="flex items-center gap-6">
-                {navItems.map((item) => (
-                    <Link
-                        key={item.href}
-                        href={item.href}
-                        className={clsx(
-                            'relative pb-1 transition-all',
-                            pathname === item.href
-                                ? 'text-white border-b-2 border-white font-semibold'
-                                : 'text-gray-500 hover:text-white'
-                        )}
-                    >
-                        {item.label}
-                    </Link>
-                ))}
-            </div>
+            {/* Mobile Menu Dropdown */}
+            {isOpen && (
+                <div className="mt-4 flex flex-col gap-4 md:hidden">
+                    {navItems.map((item) => (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setIsOpen(false)}
+                            className={clsx(
+                                'block border-b pb-1',
+                                pathname === item.href
+                                    ? 'text-white border-white font-semibold'
+                                    : 'text-gray-400 hover:text-white'
+                            )}
+                        >
+                            {item.label}
+                        </Link>
+                    ))}
+                </div>
+            )}
         </nav>
     );
 }
