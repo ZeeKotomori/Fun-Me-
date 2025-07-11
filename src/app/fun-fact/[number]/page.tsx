@@ -1,17 +1,22 @@
-import PageWrapper from '../../components/PageWrapper';
 import { notFound } from 'next/navigation';
 import Navbar from '@/app/components/Navbar';
+import PageWrapper from '@/app/components/PageWrapper';
 
-export default async function NumberFactPage({ params }: { params: { number: string } }) {
+export default async function NumberFactPage(
+    props: {
+        params: Promise<{ number: string }>;
+    }
+) {
+    const params = await props.params;
     const number = params.number;
 
     if (isNaN(Number(number))) {
         return (
-            <div className='flex flex-col min-h-screen'>
+            <div className="flex flex-col min-h-screen">
                 <Navbar />
                 <PageWrapper>
                     <h1 className="text-xl font-bold">Ups!</h1>
-                    <p className="mt-4 text-red-500">Input Must Be Number.</p>
+                    <p className="mt-4 text-red-500">Input must be a number.</p>
                 </PageWrapper>
             </div>
         );
@@ -29,7 +34,7 @@ export default async function NumberFactPage({ params }: { params: { number: str
         const text = await res.text();
 
         return (
-            <div className='flex flex-col min-h-screen'>
+            <div className="flex flex-col min-h-screen">
                 <Navbar />
                 <PageWrapper>
                     <h1 className="text-xl font-bold">Number {number}</h1>
