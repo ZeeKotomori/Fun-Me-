@@ -36,7 +36,7 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="w-full px-6 py-4 shadow-md text-white font-[var(--font-geist-sans)]">
+        <nav className="w-full bg-[#0a0a0a] px-6 py-4 shadow-md text-white font-[var(--font-geist-sans)]">
             <div className="flex justify-between items-center">
                 <Link href="/" className="text-xl font-bold">
                     Fun Me!
