@@ -10,22 +10,25 @@ export default function Home() {
       <PageWrapper>
         <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           <li className="mb-2 tracking-[-.01em]">
-            <span className="font-semibold">Fun Me!</span> is a simple app to view fun facts of the day every day.
+            <span className="font-semibold">Fun Me!</span> Discover fun facts & leave sweet notes.
           </li>
 
           <li className="mb-2 tracking-[-.01em]">
-            Build With {" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              🧠
-            </code>
+            New day, new facts — with music and memories 🎵💬
           </li>
 
-          <div className="flex pt-2 items-center flex-col sm:flex-row">
+          <div className="flex pt-2 items-center flex-col sm:flex-row gap-4">
             <Link
-              className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
+              className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-gray-50 font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
               href='/fun-fact/today'
             >
-              <span className='font-bold'>See Fact Of The Day!</span>
+              <span className='font-bold'>See Fact !</span>
+            </Link>
+            <Link
+              className="rounded-full border border-solid hover:bg-gray-900 text-white border-white bg-black transition-colors flex items-center justify-center gap-2 font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
+              href='/notes/'
+            >
+              <span className='font-bold'>Leave Note!</span>
             </Link>
           </div>
         </ol>
