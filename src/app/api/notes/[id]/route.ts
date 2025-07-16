@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getNotes, updateNote, deleteNote, findNoteById} from '@/lib/notes';
+import { getNotes, updateNote, deleteNote, findNoteById } from '@/lib/notes';
+
+function extractIdFromUrl(req: NextRequest): string | null {
+    const segments = req.nextUrl.pathname.split('/');
+    return segments[segments.length - 1] || null;
+}
 
 export async function GET(req: NextRequest) {
-    const id = req.nextUrl.pathname.split('/').pop(); // Ambil ID dari URL path
+    const id = extractIdFromUrl(req);
 
     if (!id) {
         return NextResponse.json({ error: 'Missing ID' }, { status: 400 });
@@ -17,11 +22,14 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(note);
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest) {
     try {
-        const id = params.id;
-        const body = await req.json();
+        const id = extractIdFromUrl(req);
+        if (!id) {
+            return NextResponse.json({ error: 'Missing ID in URL' }, { status: 400 });
+        }
 
+        const body = await req.json();
         const { from, to, message, key, music } = body;
 
         if (!from || !to || !message || !key) {
@@ -73,8 +81,7 @@ export async function DELETE(req: NextRequest) {
         }
 
         return NextResponse.json({ message: 'Note deleted successfully' });
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
         return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
     }
