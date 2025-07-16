@@ -63,7 +63,7 @@ export default function NoteDetailPage() {
         if (!note) return;
 
         toast.custom((t) => (
-            <div className="bg-black/80 text-white p-4 rounded shadow-lg w-[300px] flex flex-col gap-3 broder border-solid border-2 border-red-500/80">
+            <div className="bg-[#0a0a0a] text-white p-4 rounded shadow-lg w-[300px] flex flex-col gap-3 broder border-solid border-2 border-red-500/80">
                 <span>Are you sure you want to delete this note?</span>
                 <div className="flex justify-end gap-2">
                     <button

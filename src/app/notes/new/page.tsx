@@ -69,7 +69,7 @@ export default function NewNotePage() {
 
 
     return (
-        <div className="bg-black min-h-screen text-white">
+        <div className="bg-[#0a0a0a] min-h-screen text-white">
         <PageWrapper>
             <Navbar />
             <h1 className="text-xl font-bold mb-4">Create Note</h1>

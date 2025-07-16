@@ -23,7 +23,7 @@ export default function NotesPage() {
     }, []);
 
     return (
-        <div className="bg-black min-h-screen text-white">
+        <div className="bg-[#0a0a0a] min-h-screen text-white">
         <PageWrapper>
             <Navbar />
             <div className="flex justify-between items-center mb-6">

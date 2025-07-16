@@ -111,7 +111,7 @@ export default function EditNotePage() {
     if (!note) return <div className="text-white p-4">Loading...</div>;
 
     return (
-        <div className='bg-black min-h-screen text-white'>
+        <div className='bg-[#0a0a0a] min-h-screen text-white'>
         <PageWrapper>
             <NavBar />
             <h1 className="text-xl font-bold mb-4">Edit Note</h1>
