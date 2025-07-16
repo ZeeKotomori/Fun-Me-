@@ -23,6 +23,7 @@ export default function NotesPage() {
     }, []);
 
     return (
+        <div className="bg-black min-h-screen text-white">
         <PageWrapper>
             <Navbar />
             <div className="flex justify-between items-center mb-6">
@@ -56,5 +57,6 @@ export default function NotesPage() {
                 ))}
             </div>
         </PageWrapper>
+        </div>
     );
 }

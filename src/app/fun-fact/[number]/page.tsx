@@ -34,7 +34,7 @@ export default async function NumberFactPage(
         const text = await res.text();
 
         return (
-            <div className="flex flex-col min-h-screen">
+            <div className="flex flex-col min-h-screen text-white">
                 <Navbar />
                 <PageWrapper>
                     <h1 className="text-xl font-bold">Number {number}</h1>

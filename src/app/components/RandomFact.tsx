@@ -25,7 +25,7 @@ export default function RandomFact() {
     }, []);
 
     return (
-        <div className="text-center max-w-xl">
+        <div className="text-center max-w-xl text-white">
             <h1 className="text-xl font-bold mb-4">Fact of the day 🎉</h1>
 
             {loading ? (

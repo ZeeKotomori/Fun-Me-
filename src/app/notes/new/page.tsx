@@ -69,6 +69,7 @@ export default function NewNotePage() {
 
 
     return (
+        <div className="bg-black min-h-screen text-white">
         <PageWrapper>
             <Navbar />
             <h1 className="text-xl font-bold mb-4">Create Note</h1>
@@ -141,5 +142,6 @@ export default function NewNotePage() {
                 </button>
             </form>
         </PageWrapper>
+        </div>
     );
 }

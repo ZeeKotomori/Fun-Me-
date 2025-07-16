@@ -104,6 +104,7 @@ export default function NoteDetailPage() {
     if (!note) return <div className="text-white p-4">Loading...</div>;
 
     return (
+        <div className="bg-black min-h-screen text-white">
         <PageWrapper>
             <Navbar />
             <div className="mt-10 bg-white/10 border border-white/20 rounded-lg p-6 max-w-lg mx-auto">
@@ -161,5 +162,6 @@ export default function NoteDetailPage() {
                 </div>
             </div>
         </PageWrapper>
+        </div>
     );
 }

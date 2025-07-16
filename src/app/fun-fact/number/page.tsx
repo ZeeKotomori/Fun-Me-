@@ -22,7 +22,7 @@ export default function NumberInputPage() {
     };
 
     return (
-        <div className='flex flex-col min-h-screen'>
+        <div className='flex flex-col min-h-screen text-white'>
         <Navbar />
         <PageWrapper>
             <h1 className="text-xl font-bold mb-4">Find the Number Facts 🔢</h1>
