@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getNotes, updateNote, deleteNote } from '@/lib/notes';
+import { getNotes, updateNote, deleteNote, findNoteById} from '@/lib/notes';
 
-export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
-    const notes = getNotes();
-    const note = notes.find((n) => n.id === params.id);
+export async function GET(req: NextRequest) {
+    const id = req.nextUrl.pathname.split('/').pop(); // Ambil ID dari URL path
+
+    if (!id) {
+        return NextResponse.json({ error: 'Missing ID' }, { status: 400 });
+    }
+
+    const note = findNoteById(id);
 
     if (!note) {
         return NextResponse.json({ error: 'Note not found' }, { status: 404 });
@@ -42,7 +47,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
             music: music || undefined,
         };
 
-        updateNote(id, key ,updatedNote);
+        updateNote(id, key, updatedNote);
 
         return NextResponse.json(updatedNote, { status: 200 });
     } catch (error) {
