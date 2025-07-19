@@ -2,17 +2,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { updateNote, deleteNote, findNoteById } from '@/lib/notes';
 
-function extractIdFromUrl(req: NextRequest): string | null {
-    const segments = req.nextUrl.pathname.split('/');
-    return segments[segments.length - 1] || null;
-}
-
-export async function GET(req: NextRequest) {
+export async function GET(
+    req: NextRequest,
+    { params }: { params: { id: string } }
+) {
     try {
-        const id = extractIdFromUrl(req);
-        if (!id) {
-            return NextResponse.json({ error: 'ID is required' }, { status: 400 });
-        }
+        const { id } = params;
 
         const note = await findNoteById(id);
         if (!note) {
@@ -25,17 +20,16 @@ export async function GET(req: NextRequest) {
     }
 }
 
-
-export async function PUT(req: NextRequest) {
+export async function PUT(
+    req: NextRequest,
+    { params }: { params: { id: string } }
+) {
     try {
-        const id = extractIdFromUrl(req);
-        if (!id) {
-            return NextResponse.json({ error: 'ID is required' }, { status: 400 });
-        }
+        const { id } = params;
         const body = await req.json();
         const { from, to, message, key, music } = body;
 
-        if (!id || !from || !to || !message || !key) {
+        if (!from || !to || !message || !key) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
@@ -51,18 +45,17 @@ export async function PUT(req: NextRequest) {
     }
 }
 
-export async function DELETE(req: NextRequest) {
+export async function DELETE(
+    req: NextRequest,
+    { params }: { params: { id: string } }
+) {
     try {
-        const id = extractIdFromUrl(req);
-        if (!id) {
-            return NextResponse.json({ error: 'ID is required' }, { status: 400 });
-        }
-
+        const { id } = params;
         const body = await req.json();
         const { key } = body;
 
-        if (!id || !key) {
-            return NextResponse.json({ error: 'ID and Key are required' }, { status: 400 });
+        if (!key) {
+            return NextResponse.json({ error: 'Key is required' }, { status: 400 });
         }
 
         const deleted = await deleteNote(id, key);
