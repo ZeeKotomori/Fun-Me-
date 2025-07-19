@@ -4,10 +4,10 @@ import { updateNote, deleteNote, findNoteById } from '@/lib/notes';
 
 export async function GET(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    context: { params: { id: string } }
 ) {
     try {
-        const { id } = params;
+        const { id } = context.params;
 
         const note = await findNoteById(id);
         if (!note) {
@@ -22,10 +22,10 @@ export async function GET(
 
 export async function PUT(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    context: { params: { id: string } }
 ) {
     try {
-        const { id } = params;
+        const { id } = context.params;
         const body = await req.json();
         const { from, to, message, key, music } = body;
 
@@ -47,10 +47,10 @@ export async function PUT(
 
 export async function DELETE(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    context: { params: { id: string } }
 ) {
     try {
-        const { id } = params;
+        const { id } = context.params;
         const body = await req.json();
         const { key } = body;
 
