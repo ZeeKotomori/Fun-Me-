@@ -1,22 +1,29 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextRequest, NextResponse } from 'next/server';
 import { updateNote, deleteNote, findNoteById } from '@/lib/notes';
+import { prisma } from '@/lib/prisma';
 
-export async function GET(req: NextRequest) {
-    const id = req.nextUrl.pathname.split('/').pop(); // ambil [id] dari URL
+export async function GET(
+    request: NextRequest,
+    { params }: { params: { id: string } }
+) {
+    const id = params.id;
 
-    if (!id) {
-        return NextResponse.json({ error: 'ID is required' }, { status: 400 });
-    }
-
-    const note = await findNoteById(id);
+    const note = await prisma.note.findUnique({
+        where: { id },
+    });
 
     if (!note) {
-        return NextResponse.json({ error: 'Note not found' }, { status: 404 });
+        return new Response(JSON.stringify({ error: 'Note not found' }), {
+            status: 404,
+        });
     }
 
-    return NextResponse.json(note);
+    return new Response(JSON.stringify(note), {
+        headers: { 'Content-Type': 'application/json' },
+    });
 }
+
 
 export async function PUT(req: NextRequest) {
     try {
