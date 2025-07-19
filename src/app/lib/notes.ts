@@ -1,64 +1,67 @@
-export type Note = {
+import { Prisma } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+
+export async function addNote(data: {
     id: string;
     key: string;
     from: string;
     to: string;
     message: string;
-    music?: {
+    music: {
         title: string;
         artist: string;
         trackId: string;
         deezerUrl: string;
-    }
-    createdAt: number;
+    } | null;
+    expiredDate: Date;
+}) {
+    return await prisma.note.create({
+        data: {
+            ...data,
+            music: data.music as Prisma.InputJsonValue, 
+        },
+    });
+}
+export async function getNotes() {
+    return await prisma.note.findMany();
 }
 
-export const notes: Note[] = [];
-
-export function addNote(note: Note) {
-    notes.push(note);
-    return note;
+export async function findNoteById(id: string) {
+    return await prisma.note.findUnique({ where: { id } });
 }
 
-export function getNotes(): Note[] {
-    return notes;
+export async function updateNote(id: string, key: string, data: Partial<Omit<Parameters<typeof addNote>[0], 'id' | 'key'>>) {
+    const note = await prisma.note.findUnique({ where: { id } });
+    if (!note || note.key !== key) return null;
+
+    return await prisma.note.update({
+        where: { id },
+        data: {
+            ...data,
+            music: data.music as Prisma.InputJsonValue, 
+        },
+    });
 }
 
-export function findNoteById(id: string): Note | undefined {
-    return notes.find((note) => note.id === id);
-}
+export async function deleteNote(id: string, key: string) {
+    const note = await prisma.note.findUnique({ where: { id } });
+    if (!note || note.key !== key) return false;
 
-export function updateNote(id: string, key: string, updatedData: Partial<Omit<Note, 'id' | 'key' | 'createdAt'>>) {
-    const note = notes.find((n) => n.id === id && n.key === key);
-    if (!note) return null;
-
-    Object.assign(note, updatedData);
-    return note;
-}
-
-export function deleteNote(id: string, key: string) {
-    const index = notes.findIndex((n) => n.id === id && n.key === key);
-    if (index === -1) {
-        return false;
-    }
-
-    notes.splice(index, 1);
+    await prisma.note.delete({ where: { id } });
     return true;
 }
 
-export function deleteExpiredNotes() {
-    const now = Date.now();
-    const beforeLength = notes.length;
-    const validNotes = notes.filter((n) => now - n.createdAt < 24 * 60 * 60 * 1000);
-    notes.length = 0;
-    notes.push(...validNotes);
+export async function deleteExpiredNotes() {
+    const now = new Date();
+    const { count } = await prisma.note.deleteMany({
+        where: {
+            expiredDate: { lt: now },
+        },
+    });
 
-    if (notes.length !== beforeLength) {
-        console.log(`[CLEANUP] Deleted ${beforeLength - notes.length} expired notes`);
+    if (count > 0) {
+        console.log(`[CLEANUP] Deleted ${count} expired notes`);
     }
 }
 
-// ✅ Jalankan setiap 1 jam
-setInterval(() => {
-    deleteExpiredNotes();
-}, 60 *  60 * 1000);
+setInterval(deleteExpiredNotes, 60 * 60 * 1000);
