@@ -44,7 +44,7 @@ export async function DELETE(req: NextRequest) {
         const id = req.nextUrl.pathname.split('/').pop() // Ambil id dari URL
         if (!id) return NextResponse.json({ error: 'Missing ID' }, { status: 400 })
 
-        const key = req.headers.get('x-note-key')
+        const key = req.body ? (await req.json()).key : null
         if (!key) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
         }
