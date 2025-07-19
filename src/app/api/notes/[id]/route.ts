@@ -2,8 +2,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { updateNote, deleteNote, findNoteById } from '@/lib/notes';
 
-export async function GET(req: NextRequest, context: { params: { id: string } }) {
-    const { id } = context.params;
+export async function GET(req: NextRequest) {
+    const id = req.nextUrl.pathname.split('/').pop(); // ambil [id] dari URL
+
+    if (!id) {
+        return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+    }
+
     const note = await findNoteById(id);
 
     if (!note) {
@@ -13,38 +18,33 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
     return NextResponse.json(note);
 }
 
-export async function PUT(req: NextRequest, context: { params: { id: string } }) {
+export async function PUT(req: NextRequest) {
     try {
-        const { id } = context.params;
+        const id = req.nextUrl.pathname.split('/').pop(); // ambil [id] dari URL
         const body = await req.json();
         const { from, to, message, key, music } = body;
 
-        if (!from || !to || !message || !key) {
+        if (!id || !from || !to || !message || !key) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
-        const updatedNote = await updateNote(id, key, {
-            from,
-            to,
-            message,
-            music,
-        });
+        const updatedNote = await updateNote(id, key, { from, to, message, music });
 
         if (!updatedNote) {
             return NextResponse.json({ error: 'Note not found or key invalid' }, { status: 404 });
         }
 
-        return NextResponse.json(updatedNote, { status: 200 });
+        return NextResponse.json(updatedNote);
     } catch (error) {
         return NextResponse.json({ error: 'Failed to update note' }, { status: 500 });
     }
 }
 
-export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
+export async function DELETE(req: NextRequest) {
     try {
+        const id = req.nextUrl.pathname.split('/').pop(); // ambil [id] dari URL
         const body = await req.json();
         const { key } = body;
-        const { id } = context.params;
 
         if (!id || !key) {
             return NextResponse.json({ error: 'ID and Key are required' }, { status: 400 });
