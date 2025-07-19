@@ -1,70 +1,61 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { NextRequest, NextResponse } from 'next/server';
-import { updateNote, deleteNote, findNoteById } from '@/lib/notes';
+import { NextRequest, NextResponse } from 'next/server'
+import { updateNote, deleteNote, findNoteById } from '@/lib/notes'
 
-export async function GET(
-    req: NextRequest,
-    context: { params: { id: string } }
-) {
+export async function GET(req: NextRequest) {
     try {
-        const { id } = context.params;
+        const id = req.nextUrl.pathname.split('/').pop() // Ambil id dari URL
+        if (!id) return NextResponse.json({ error: 'Missing ID' }, { status: 400 })
 
-        const note = await findNoteById(id);
+        const note = await findNoteById(id)
         if (!note) {
-            return NextResponse.json({ error: 'Note not found' }, { status: 404 });
+            return NextResponse.json({ error: 'Note not found' }, { status: 404 })
         }
 
-        return NextResponse.json(note);
+        return NextResponse.json(note)
     } catch (error) {
-        return NextResponse.json({ error: 'Failed to retrieve note' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to retrieve note' }, { status: 500 })
     }
 }
-
-export async function PUT(
-    req: NextRequest,
-    context: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest) {
     try {
-        const { id } = context.params;
-        const body = await req.json();
-        const { from, to, message, key, music } = body;
+        const id = req.nextUrl.pathname.split('/').pop() // Ambil id dari URL
+        if (!id) return NextResponse.json({ error: 'Missing ID' }, { status: 400 })
 
-        if (!from || !to || !message || !key) {
-            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-        }
-
-        const updatedNote = await updateNote(id, key, { from, to, message, music });
-
-        if (!updatedNote) {
-            return NextResponse.json({ error: 'Note not found or key invalid' }, { status: 404 });
-        }
-
-        return NextResponse.json(updatedNote);
-    } catch (error) {
-        return NextResponse.json({ error: 'Failed to update note' }, { status: 500 });
-    }
-}
-
-export async function DELETE(
-    req: NextRequest,
-    context: { params: { id: string } }
-) {
-    try {
-        const { id } = context.params;
-        const body = await req.json();
-        const { key } = body;
+        const body = await req.json()
+        const { key, ...data } = body
 
         if (!key) {
-            return NextResponse.json({ error: 'Key is required' }, { status: 400 });
+            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
         }
 
-        const deleted = await deleteNote(id, key);
-        if (!deleted) {
-            return NextResponse.json({ error: 'Note not found or key invalid' }, { status: 404 });
+        const updatedNote = await updateNote(id, key, data)
+        if (!updatedNote) {
+            return NextResponse.json({ error: 'Note not found or key mismatch' }, { status: 404 })
         }
 
-        return NextResponse.json({ message: 'Note deleted successfully' });
+        return NextResponse.json(updatedNote)
     } catch (error) {
-        return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
+        return NextResponse.json({ error: 'Failed to update note' }, { status: 500 })
+    }
+}
+export async function DELETE(req: NextRequest) {
+    try {
+        const id = req.nextUrl.pathname.split('/').pop() // Ambil id dari URL
+        if (!id) return NextResponse.json({ error: 'Missing ID' }, { status: 400 })
+
+        const key = req.headers.get('x-note-key')
+        if (!key) {
+            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+        }
+
+        const deleted = await deleteNote(id, key)
+        if (!deleted) {
+            return NextResponse.json({ error: 'Note not found or key mismatch' }, { status: 404 })
+        }
+
+        return NextResponse.json({ message: 'Note deleted successfully' }, { status: 200 })
+    } catch (error) {
+        return NextResponse.json({ error: 'Failed to delete note' }, { status: 500 })
     }
 }
