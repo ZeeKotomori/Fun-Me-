@@ -1,36 +1,34 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextRequest, NextResponse } from 'next/server';
 import { updateNote, deleteNote, findNoteById } from '@/lib/notes';
-import { prisma } from '@/lib/prisma';
 
-export async function GET({params} : {params : Promise<{ id: string }>}) {
-    const { id } = await params;
-    if (!id) {
-        return new Response(JSON.stringify({ error: 'ID is required' }), {
-            status: 400,
-            headers: { 'Content-Type': 'application/json' },
-        });
+function extractIdFromUrl(req: NextRequest): string | null {
+    const segments = req.nextUrl.pathname.split('/');
+    return segments[segments.length - 1] || null;
+}
+
+export async function GET(req: NextRequest) {
+    try {
+        const id = extractIdFromUrl(req);
+        if (!id) {
+            return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+        }
+
+        const note = await findNoteById(id);
+        if (!note) {
+            return NextResponse.json({ error: 'Note not found' }, { status: 404 });
+        }
+
+        return NextResponse.json(note);
+    } catch (error) {
+        return NextResponse.json({ error: 'Failed to retrieve note' }, { status: 500 });
     }
-
-    const note = await prisma.note.findUnique({
-        where: { id },
-    });
-
-    if (!note) {
-        return new Response(JSON.stringify({ error: 'Note not found' }), {
-            status: 404,
-        });
-    }
-
-    return new Response(JSON.stringify(note), {
-        headers: { 'Content-Type': 'application/json' },
-    });
 }
 
 
-export async function PUT(req: Request, {params} : {params : Promise<{ id: string }>}) {
-    const { id } = await params;
+export async function PUT(req: NextRequest) {
     try {
+        const id = extractIdFromUrl(req);
         if (!id) {
             return NextResponse.json({ error: 'ID is required' }, { status: 400 });
         }
@@ -53,9 +51,9 @@ export async function PUT(req: Request, {params} : {params : Promise<{ id: strin
     }
 }
 
-export async function DELETE(req: Request, {params} : {params : Promise<{ id: string }>}) {
+export async function DELETE(req: NextRequest) {
     try {
-        const { id } = await params;
+        const id = extractIdFromUrl(req);
         if (!id) {
             return NextResponse.json({ error: 'ID is required' }, { status: 400 });
         }
