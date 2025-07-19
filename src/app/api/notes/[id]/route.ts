@@ -3,11 +3,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { updateNote, deleteNote, findNoteById } from '@/lib/notes';
 import { prisma } from '@/lib/prisma';
 
-export async function GET(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-) {
-    const id = params.id;
+export async function GET({params} : {params : Promise<{ id: string }>}) {
+    const { id } = await params;
+    if (!id) {
+        return new Response(JSON.stringify({ error: 'ID is required' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' },
+        });
+    }
 
     const note = await prisma.note.findUnique({
         where: { id },
@@ -25,9 +28,12 @@ export async function GET(
 }
 
 
-export async function PUT(req: NextRequest) {
+export async function PUT(req: Request, {params} : {params : Promise<{ id: string }>}) {
+    const { id } = await params;
     try {
-        const id = req.nextUrl.pathname.split('/').pop(); // ambil [id] dari URL
+        if (!id) {
+            return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+        }
         const body = await req.json();
         const { from, to, message, key, music } = body;
 
@@ -47,9 +53,13 @@ export async function PUT(req: NextRequest) {
     }
 }
 
-export async function DELETE(req: NextRequest) {
+export async function DELETE(req: Request, {params} : {params : Promise<{ id: string }>}) {
     try {
-        const id = req.nextUrl.pathname.split('/').pop(); // ambil [id] dari URL
+        const { id } = await params;
+        if (!id) {
+            return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+        }
+
         const body = await req.json();
         const { key } = body;
 
