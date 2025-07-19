@@ -3,51 +3,41 @@ import { getNotes, addNote } from '@/lib/notes';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function GET() {
-    return NextResponse.json(getNotes());
+    const notes = await getNotes();
+    return NextResponse.json(notes);
 }
 
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-
         const { from, to, message, key, music } = body;
 
         if (!from || !to || !message || !key) {
-            return NextResponse.json(
-                { error: 'Missing required fields' },
-                { status: 400 }
-            );
+            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
-        // Validasi dan sanitasi musik jika ada
-        let safeMusic = undefined;
-
-        if (music && typeof music === 'object') {
-            safeMusic = {
+        const safeMusic = music && typeof music === 'object'
+            ? {
                 title: String(music.title || ''),
                 artist: String(music.artist || ''),
                 trackId: String(music.trackId || ''),
                 deezerUrl: String(music.deezerUrl || ''),
-            };
-        }
+            }
+            : null;
 
-        const newNote = addNote({
+        const newNote = await addNote({
             id: uuidv4(),
             key,
             from,
             to,
             message,
-            createdAt: Date.now(),
-            music: safeMusic, // optional
+            music: safeMusic,
+            expiredDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
         });
 
         return NextResponse.json(newNote, { status: 201 });
-
     } catch (error) {
         console.error('Error creating note:', error);
-        return NextResponse.json(
-            { error: String(error instanceof Error ? error.message : error) },
-            { status: 400 }
-        );
+        return NextResponse.json({ error: 'Failed to create note' }, { status: 500 });
     }
 }
