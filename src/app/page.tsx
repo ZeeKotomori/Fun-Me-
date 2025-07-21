@@ -1,12 +1,15 @@
 'use client';
 import Link from 'next/link';
-import Navbar from './components/Navbar';
-import PageWrapper from './components/PageWrapper';
+import Navbar from '../components/Navbar';
+import PageWrapper from '../components/PageWrapper';
+import { SessionProvider } from 'next-auth/react';
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      <SessionProvider>
+        <Navbar />
+      </SessionProvider>
       <PageWrapper>
         <ol className="text-white list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           <li className="mb-2 tracking-[-.01em]">
