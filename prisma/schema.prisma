@@ -18,10 +18,17 @@ model User {
   name          String?
   email         String?   @unique
   emailVerified DateTime?
+  hashedPassword String?
+  role       Role      @default(U)
   image         String?
 
   accounts      Account[]
   sessions      Session[]
+}
+
+enum Role {
+  A
+  U
 }
 
 model Account {

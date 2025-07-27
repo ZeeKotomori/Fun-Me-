@@ -4,9 +4,10 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
+import Image from 'next/image'
 
 export default function Navbar() {
     const pathname = usePathname();
@@ -14,6 +15,10 @@ export default function Navbar() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const closeTimeout = useRef<NodeJS.Timeout | null>(null);
     const { data: session, status } = useSession();
+
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
+    if (!mounted) return null;
 
     const funItems = [
         { label: 'Fun-Day', href: '/fun-fact/today' },
@@ -97,15 +102,36 @@ export default function Navbar() {
                         </Link>
                     ))}
 
+                    {session?.user?.role === 'A' && (
+                        
+                        <Link
+                            href="/dashboard"
+                            onClick={() => setIsOpen(false)}
+                            className={clsx(
+                                'relative pb-1 transition-all',
+                                pathname === '/dashboard'
+                                    ? 'text-white border-b-2 border-white font-semibold'
+                                    : 'text-gray-400 hover:text-white'
+                            )}
+                        >
+                            Dashboard
+                        </Link>
+                    )}
+
                     {/* Auth */}
                     <div className="ml-4">
                         {status === 'authenticated' ? (
                             <div className="flex items-center gap-2">
-                                <img
-                                    src={session.user?.image ?? ''}
-                                    alt="Profile"
-                                    className="w-8 h-8 rounded-full"
-                                />
+                                {session.user?.image && (
+                                    <Image
+                                        src={session.user.image}
+                                        alt="Profile"
+                                        width={32}
+                                        height={32}
+                                        className="rounded-full"
+                                    />
+                                )}
+
                                 <button
                                     onClick={() => signOut()}
                                     className="text-sm text-red-400 hover:text-red-600"
@@ -114,45 +140,76 @@ export default function Navbar() {
                                 </button>
                             </div>
                         ) : (
-                            <button
-                                onClick={() => signIn('google')}
-                                className="text-sm bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 transition"
-                            >
-                                Login
-                            </button>
+                            <Link href="/login" className="text-xl font-bold">
+                                <button
+                                    className="text-sm bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 transition"
+                                >
+                                    Login
+                                </button>
+                            </Link>
                         )}
                     </div>
                 </div>
             </div>
 
-            {/* Mobile menu */}
             {isOpen && (
-                <div className="mt-4 flex flex-col gap-4 md:hidden">
-                    {[...funItems, ...navItems].map((item) => (
+                <div className="mt-4 flex flex-col gap-3 md:hidden bg-[#0a0a0a] px-4 py-4 rounded shadow-md">
+                    <span className="text-gray-500 uppercase text-xs tracking-wide">Fun</span>
+                    {funItems.map((item) => (
                         <Link
                             key={item.href}
                             href={item.href}
                             onClick={() => setIsOpen(false)}
                             className={clsx(
-                                'block border-b pb-1',
-                                pathname === item.href
-                                    ? 'text-white border-white font-semibold'
-                                    : 'text-gray-400 hover:text-white'
+                                'block px-2 py-2 rounded hover:bg-white/10',
+                                pathname === item.href ? 'text-white font-semibold' : 'text-gray-300'
                             )}
                         >
                             {item.label}
                         </Link>
                     ))}
 
-                    <div className="pt-2 border-t border-gray-700">
+                    <span className="text-gray-500 uppercase text-xs tracking-wide mt-4">Main</span>
+                    {navItems.map((item) => (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            onClick={() => setIsOpen(false)}
+                            className={clsx(
+                                'block px-2 py-2 rounded hover:bg-white/10',
+                                pathname === item.href ? 'text-white font-semibold' : 'text-gray-300'
+                            )}
+                        >
+                            {item.label}
+                        </Link>
+                    ))}
+
+                    {session?.user?.role === 'A' && (
+                        <Link
+                            href="/dashboard"
+                            onClick={() => setIsOpen(false)}
+                            className={clsx(
+                                'block px-2 py-2 rounded hover:bg-white/10',
+                                pathname === '/dashboard' ? 'text-white font-semibold' : 'text-gray-300'
+                            )}
+                        >
+                            Dashboard
+                        </Link>
+                    )}
+
+                    <div className="pt-4 border-t border-gray-700 mt-4">
                         {status === 'authenticated' ? (
-                            <div className="flex items-center gap-3">
-                                <img
-                                    src={session.user?.image ?? ''}
-                                    alt="Profile"
-                                    className="w-8 h-8 rounded-full"
-                                />
-                                <span>{session.user?.name}</span>
+                            <div className="flex items-center gap-3 flex-wrap">
+                                {session.user?.image && (
+                                    <Image
+                                        src={session.user.image}
+                                        alt="Profile"
+                                        width={32}
+                                        height={32}
+                                        className="rounded-full"
+                                    />
+                                )}
+                                <span className="text-sm">{session.user?.name}</span>
                                 <button
                                     onClick={() => signOut()}
                                     className="text-sm text-red-400 hover:text-red-600"
@@ -161,16 +218,16 @@ export default function Navbar() {
                                 </button>
                             </div>
                         ) : (
-                            <button
-                                onClick={() => signIn('google')}
-                                className="text-sm bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 transition"
-                            >
-                                Login
-                            </button>
+                            <Link href="/login" className="block mt-2">
+                                <button className="text-sm bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full text-left">
+                                    Login
+                                </button>
+                            </Link>
                         )}
                     </div>
                 </div>
             )}
+
         </nav>
     );
 }
