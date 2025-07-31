@@ -38,7 +38,7 @@ export default function NotesPage() {
             return;
         }
 
-        const res = await fetch(`/api/notes/${noteId}/upvote`, { method: 'POST' });
+        const res = await fetch(`/api/notes/upvote/${noteId}/`, { method: 'POST' });
         const data = await res.json();
 
         if (data.success) {
@@ -57,7 +57,7 @@ export default function NotesPage() {
             return;
         }
 
-        const res = await fetch(`/api/notes/${noteId}/downvote`, { method: 'POST' });
+        const res = await fetch(`/api/notes/downvote/${noteId}`, { method: 'POST' });
         const data = await res.json();
 
         if (data.success) {
@@ -74,7 +74,7 @@ export default function NotesPage() {
     const handleRemoveUpvote = async (noteId: string) => {
         if (!session) return;
 
-        const res = await fetch(`/api/notes/${noteId}/upvote`, { method: 'DELETE' });
+        const res = await fetch(`/api/notes/upvote/${noteId}`, { method: 'DELETE' });
         const data = await res.json();
 
         if (data.success) {
@@ -90,7 +90,7 @@ export default function NotesPage() {
     const handleRemoveDownvote = async (noteId: string) => {
         if (!session) return;
 
-        const res = await fetch(`/api/notes/${noteId}/downvote`, { method: 'DELETE' });
+        const res = await fetch(`/api/notes/downvote/${noteId}`, { method: 'DELETE' });
         const data = await res.json();
 
         if (data.success) {
