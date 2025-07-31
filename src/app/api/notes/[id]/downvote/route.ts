@@ -22,8 +22,8 @@ export async function POST(req: NextRequest) {
     }
 }
 
-export async function DELETE(req: NextRequest) {
-    const id = req.nextUrl.pathname.split('/')[4]; // /api/notes/[id]/downvote/delete
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+    const id = params.id;
 
     if (!id) {
         return NextResponse.json({ success: false, error: 'Missing ID' }, { status: 400 });
