@@ -24,6 +24,7 @@ model User {
 
   accounts      Account[]
   sessions      Session[]
+  challenges    Challenge[]
 }
 
 enum Role {
@@ -78,4 +79,14 @@ model Note {
   downvote    Int      @default(0)
   createdAt   DateTime @default(now())
   expiredDate DateTime
+}
+
+model Challenge {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  username    String
+  user        User?     @relation(fields: [userId], references: [id])
+  userId      String?
+  createdAt   DateTime @default(now())
 }
