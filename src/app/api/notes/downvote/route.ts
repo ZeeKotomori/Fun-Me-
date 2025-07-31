@@ -1,8 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-    const { id } = params;
+export async function POST(req: NextRequest) {
+    const id = req.nextUrl.pathname.split('/').pop(); // Ambil ID dari URL
 
     if (!id) {
         return NextResponse.json({ success: false, error: 'Missing ID' }, { status: 400 });
@@ -22,8 +22,8 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-    const { id } = params;
+export async function DELETE(req: NextRequest) {
+    const id = req.nextUrl.pathname.split('/').pop(); // Ambil ID dari URL
 
     if (!id) {
         return NextResponse.json({ success: false, error: 'Missing ID' }, { status: 400 });
