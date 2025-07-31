@@ -1,11 +1,9 @@
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function DELETE(
-    _req: NextRequest,
-    context: { params: { id: string } }
-) {
-    const { id } = context.params;
+export async function DELETE(req: NextRequest) {
+    const url = new URL(req.url);
+    const id = url.pathname.split('/').pop();
 
     if (!id) {
         return NextResponse.json({ success: false, error: 'Missing ID' }, { status: 400 });
