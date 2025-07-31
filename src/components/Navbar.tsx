@@ -24,6 +24,7 @@ export default function Navbar() {
         { label: 'Fun-Day', href: '/fun-fact/today' },
         { label: 'Fun-Num', href: '/fun-fact/number' },
         { label: 'Leave Note', href: '/notes/new' },
+        { label: 'Challenge Me', href: '/challenge' },
     ];
 
     const navItems = [

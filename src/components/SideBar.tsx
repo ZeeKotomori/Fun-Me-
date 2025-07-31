@@ -8,6 +8,7 @@ export function Sidebar() {
             <nav className="flex flex-col space-y-4">
                 <Link href="/" className="hover:text-blue-500">Home</Link>
                 <Link href="/dashboard" className="hover:text-blue-500">Dashboard</Link>
+                <Link href="/dashboard/users" className="hover:text-blue-500">User Management</Link>
             </nav>
         </aside>
     );
