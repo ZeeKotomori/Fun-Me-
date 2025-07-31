@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
-    const id = req.nextUrl.pathname.split('/')[4]; // /api/notes/[id]/downvote/delete
+    const id = req.nextUrl.pathname.split('/')[4];
 
     if (!id) {
         return NextResponse.json({ success: false, error: 'Missing ID' }, { status: 400 });
@@ -22,8 +22,8 @@ export async function POST(req: NextRequest) {
     }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-    const id = params.id;
+export async function DELETE(req: NextRequest) {
+    const id = req.nextUrl.pathname.split('/')[4];
 
     if (!id) {
         return NextResponse.json({ success: false, error: 'Missing ID' }, { status: 400 });
