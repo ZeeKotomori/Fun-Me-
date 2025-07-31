@@ -22,7 +22,7 @@ export default function EditChallenge() {
 
     const handleUpdate = async () => {
         await fetch(`/api/challenge/${params.id}`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
