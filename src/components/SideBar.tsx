@@ -9,6 +9,7 @@ export function Sidebar() {
                 <Link href="/" className="hover:text-blue-500">Home</Link>
                 <Link href="/dashboard" className="hover:text-blue-500">Dashboard</Link>
                 <Link href="/dashboard/users" className="hover:text-blue-500">User Management</Link>
+                <Link href="/dashboard/challenge" className="hover:text-blue-500">Challenge Management</Link>
             </nav>
         </aside>
     );

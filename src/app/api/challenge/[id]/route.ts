@@ -19,10 +19,6 @@ export async function DELETE(req: NextRequest) {
         return new NextResponse(JSON.stringify({ error: 'Not found' }), { status: 404 })
     }
 
-    if (challenge.userId !== session.user.id) {
-        return new NextResponse(JSON.stringify({ error: 'Forbidden' }), { status: 403 })
-    }
-
     await prisma.challenge.delete({
         where: { id },
     })
@@ -48,8 +44,11 @@ export async function PATCH(req: NextRequest) {
         return new NextResponse(JSON.stringify({ error: 'Not found' }), { status: 404 })
     }
 
-    if (challenge.userId !== session.user.id) {
-        return new NextResponse(JSON.stringify({ error: 'Forbidden' }), { status: 403 })
+    const isOwner = challenge.userId === session.user.id;
+    const isAdmin = session.user.role === "A";
+    
+    if (!isOwner && !isAdmin) {
+        return new NextResponse(JSON.stringify({ error: 'Forbidden' }), { status: 403 });
     }
 
     const updated = await prisma.challenge.update({
@@ -60,6 +59,20 @@ export async function PATCH(req: NextRequest) {
         },
     })
 
+    if (!updated) {
+        return new NextResponse(JSON.stringify({ error: 'Failed to update challenge' }), { status: 500 })
+    }
+
+    if(isAdmin) {
+        await prisma.challengeLog.create({
+            data: {
+                challengeId: updated.id,
+                userId: session.user.id,
+                action: 'updated',
+                details: `Challenge updated by admin ${session.user.name}`,
+            }
+        })
+    }
     return new Response(JSON.stringify(updated), { status: 200 })
 }
 

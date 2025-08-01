@@ -14,6 +14,25 @@ export interface User {
     role: 'A' | 'U';
 }
 
+export interface Challenge {
+    id: string;
+    title: string;
+    description: string;
+    username: string;
+    userId?: string;
+    createdAt: string;
+}
+
+export interface ChallengeLog {
+    id: string;
+    challengeId: string;
+    userId: string;
+    action: 'created' | 'updated' | 'deleted';
+    details?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
 export const api = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
@@ -53,6 +72,42 @@ export const api = createApi({
                 body: data,
             }),
         }),
+
+        getChallenge: builder.query<Challenge[], void>({
+            query: () => 'challenge',
+            providesTags: ['Dashboard'],
+        }),
+
+        createChallenge: builder.mutation<void, Partial<Challenge>>({
+            query: (challenge) => ({
+                url: 'challenge',
+                method: 'POST',
+                body: challenge,
+            }),
+            invalidatesTags: ['Dashboard'],
+        }),
+
+        updateChallenge: builder.mutation<void, { id: string; data: Partial<Challenge> }>({
+            query: ({ id, data }) => ({
+                url: `challenge/${id}`,
+                method: 'PATCH',
+                body: data,
+            }),
+            invalidatesTags: ['Dashboard'],
+        }),
+
+        deleteChallenge: builder.mutation<void, string>({
+            query: (id) => ({
+                url: `challenge/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Dashboard'],
+        }),
+
+        getChallengeLogs: builder.query<ChallengeLog[], void>({
+            query: () => 'challenge/logs',
+            providesTags: ['Dashboard'],
+        })
     }),
 });
 
@@ -62,4 +117,8 @@ export const {
     useCreateUserMutation,
     useUpdateUserMutation,
     useDeleteUserMutation,
+    useGetChallengeQuery,
+    useCreateChallengeMutation,
+    useUpdateChallengeMutation,
+    useDeleteChallengeMutation,
 } = api
