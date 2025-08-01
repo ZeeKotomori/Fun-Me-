@@ -27,7 +27,7 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <Card title="Total Users" value={data?.users.toLocaleString() ?? '-'} />
                 <Card title="Note's Leave Today" value={data?.notesToday.toLocaleString() ?? '-'} />
-                <Card title="Leave Challange" value={data?.leavesChallenge.toLocaleString() ?? '-'} />
+                <Card title="Leave Challange" value={data?.challenge?.toLocaleString() ?? '-'} />
             </div>
 
             <div className="mt-8">

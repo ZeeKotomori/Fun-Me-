@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export interface DashboardData {
     users: number;
     notesToday: number;
-    leavesChallenge: string;
+    challenge: number;
 }
 
 export interface User {

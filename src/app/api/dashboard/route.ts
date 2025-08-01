@@ -14,11 +14,12 @@ export async function GET() {
                 },
             },
         })
+        const challenge = await prisma.challenge.count()
 
         return NextResponse.json({
             users,
             notesToday,
-            leavesChallenge: 'Coming Soon',
+            challenge,
         })
     } catch (error) {
         console.error('Error in GET /api/dashboard:', error)
